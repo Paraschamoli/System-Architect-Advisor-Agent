@@ -1,5 +1,6 @@
-import pytest
 from unittest.mock import AsyncMock, MagicMock, patch
+
+import pytest
 
 from system_architect_advisor_agent.main import handler
 
@@ -13,8 +14,12 @@ async def test_handler_returns_response():
     mock_response = "Test architectural analysis response"
 
     # Mock _initialized to skip initialization and run_architect_flow to return our mock
-    with patch("system_architect_advisor_agent.main._initialized", True), \
-         patch("system_architect_advisor_agent.main.run_architect_flow", new_callable=AsyncMock, return_value=mock_response):
+    with (
+        patch("system_architect_advisor_agent.main._initialized", True),
+        patch(
+            "system_architect_advisor_agent.main.run_architect_flow", new_callable=AsyncMock, return_value=mock_response
+        ),
+    ):
         result = await handler(messages)
 
     # Verify we get a result back
@@ -32,8 +37,12 @@ async def test_handler_with_multiple_messages():
 
     mock_response = "Multiple messages test response"
 
-    with patch("system_architect_advisor_agent.main._initialized", True), \
-         patch("system_architect_advisor_agent.main.run_architect_flow", new_callable=AsyncMock, return_value=mock_response) as mock_run:
+    with (
+        patch("system_architect_advisor_agent.main._initialized", True),
+        patch(
+            "system_architect_advisor_agent.main.run_architect_flow", new_callable=AsyncMock, return_value=mock_response
+        ) as mock_run,
+    ):
         result = await handler(messages)
 
     # Verify run_architect_flow was called
@@ -50,9 +59,13 @@ async def test_handler_initialization():
     mock_response = "Initialization test response"
 
     # Start with _initialized as False to test initialization path
-    with patch("system_architect_advisor_agent.main._initialized", False), \
-         patch("system_architect_advisor_agent.main.initialize_agent", new_callable=AsyncMock) as mock_init, \
-         patch("system_architect_advisor_agent.main.run_architect_flow", new_callable=AsyncMock, return_value=mock_response):
+    with (
+        patch("system_architect_advisor_agent.main._initialized", False),
+        patch("system_architect_advisor_agent.main.initialize_agent", new_callable=AsyncMock) as mock_init,
+        patch(
+            "system_architect_advisor_agent.main.run_architect_flow", new_callable=AsyncMock, return_value=mock_response
+        ),
+    ):
         result = await handler(_messages)
 
     # Verify initialization was called
@@ -72,7 +85,9 @@ async def test_handler_race_condition_prevention():
     with (
         patch("system_architect_advisor_agent.main._initialized", False),
         patch("system_architect_advisor_agent.main.initialize_agent", new_callable=AsyncMock) as mock_init,
-        patch("system_architect_advisor_agent.main.run_architect_flow", new_callable=AsyncMock, return_value=mock_response),
+        patch(
+            "system_architect_advisor_agent.main.run_architect_flow", new_callable=AsyncMock, return_value=mock_response
+        ),
         patch("system_architect_advisor_agent.main._init_lock", new_callable=MagicMock()) as mock_lock,
     ):
         # Configure the lock to work as an async context manager
@@ -103,7 +118,9 @@ async def test_handler_with_architectural_query():
 
     with (
         patch("system_architect_advisor_agent.main._initialized", True),
-        patch("system_architect_advisor_agent.main.run_architect_flow", new_callable=AsyncMock, return_value=mock_response),
+        patch(
+            "system_architect_advisor_agent.main.run_architect_flow", new_callable=AsyncMock, return_value=mock_response
+        ),
     ):
         result = await handler(messages)
 
