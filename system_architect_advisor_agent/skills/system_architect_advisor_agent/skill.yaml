@@ -9,186 +9,165 @@ author: paras@getbindu.com
 
 # Description
 description: |
-  AI System Architect Advisor is an intelligent system design assistant that transforms natural language
-  project requirements into structured architecture recommendations, infrastructure planning, security strategies,
-  and compliance considerations. It leverages a dual-model reasoning pipeline with DeepSeek R1 for structured
-  analysis and Claude 3.5 Sonnet for professional documentation generation.
+  Transforms natural language project requirements into structured technical design documents.
+  Uses a two-phase pipeline: DeepSeek R1 for structured JSON analysis, Claude 3.5 Sonnet for
+  markdown report generation. Outputs include architecture decisions, infrastructure specs,
+  security measures, database choices, tech stack, risk assessment, and implementation roadmap.
 
 # Tags and Modes
 tags:
   - system-architecture
   - technical-design
-  - infrastructure-planning
-  - security-strategy
-  - compliance
-  - implementation-roadmap
+  - architecture-recommendations
   - technical-documentation
-  - software-architecture
 
 input_modes:
   - text/plain
-  - application/json
 
 output_modes:
-  - text/plain
-  - application/json
   - text/markdown
 
 # Example Queries
 examples:
-  - "Design a microservices architecture for an e-commerce platform handling 1M users daily with real-time inventory"
-  - "Create a system design for a fintech payment processing system with PCI compliance and 10K TPS"
-  - "Plan cloud migration strategy for legacy monolith to microservices architecture"
-  - "Design real-time chat application with video calling for 100K concurrent users"
-  - "Create technical roadmap for social media platform with recommendation engine"
+  - "Design a scalable system architecture for a multi-tenant SaaS analytics platform handling 50K users and 10TB monthly data"
+  - "Create a system design for a fintech payment processing platform with PCI-DSS compliance and 5K TPS"
+  - "Design a real-time chat application architecture for 100K concurrent users"
 
 # Detailed Capabilities
 capabilities_detail:
-  architecture_design:
+  architecture_analysis:
     supported: true
-    patterns:
+    method: "Two-phase LLM pipeline (reasoning + drafting)"
+    output_format: "Structured JSON converted to markdown technical report"
+    patterns_analyzed:
       - microservices
+      - monolithic
       - serverless
       - event_driven
-      - cqrs
-      - domain_driven_design
-    considerations:
-      - scalability
-      - performance
-      - reliability
-      - maintainability
-  infrastructure_planning:
+      - layered
+
+  structured_output:
     supported: true
-    cloud_providers:
-      - aws
-      - azure
-      - gcp
-      - multi_cloud
-    services:
-      - compute
-      - storage
-      - networking
-      - databases
-      - cdn
-  security_strategy:
+    schema_fields:
+      - architecture_decision (pattern, rationale, trade-offs, cost estimates)
+      - infrastructure_resources (resource type, specs, scaling policy, cost)
+      - security_measures (measure type, priority, compliance standards, data classification)
+      - database_choice
+      - tech_stack (frontend, backend, devops)
+      - risk_assessment (risk to mitigation mapping)
+      - implementation_roadmap (phased steps)
+
+  reasoning_transparency:
     supported: true
-    areas:
-      - authentication
-      - authorization
-      - data_encryption
-      - network_security
-      - compliance_standards
-  compliance_considerations:
+    method: "DeepSeek R1 reasoning tokens extracted and included in collapsible section"
+
+  memory_integration:
     supported: true
-    standards:
-      - gdpr
-      - hipaa
-      - pci_dss
-      - soc2
-      - iso27001
+    condition: "Only if MEM0_API_KEY environment variable is set"
+    tool: "Mem0Tools"
 
 # Performance Metrics
 performance:
-  average_processing_time: "~30-90 seconds per architecture design"
-  max_concurrent_requests: 10
-  memory_per_request: "~512MB"
-  supported_project_sizes:
-    - small_startup
-    - medium_enterprise
-    - large_scale_systems
-  reasoning_model: "deepseek/deepseek-r1"
-  drafting_model: "anthropic/claude-3.5-sonnet"
+  processing_phases: 2
+  phase_1_reasoning: "DeepSeek R1 analysis (max 4000 tokens)"
+  phase_2_drafting: "Claude 3.5 Sonnet markdown generation"
+  estimated_time: "Variable based on LLM API response times"
+  async_execution: true
+  lazy_initialization: true
 
-# Technical Expertise
-technical_expertise:
-  programming_languages:
-    - python
-    - javascript/typescript
-    - java
-    - go
-    - rust
-    - c#/.net
-    - ruby
-  databases:
-    - relational_sql (postgresql, mysql, sqlserver)
-    - nosql (mongodb, cassandra, dynamodb)
-    - graph_databases (neo4j, amazon neptune)
-    - time_series (influxdb, timescaledb)
-    - search_engines (elasticsearch, opensearch)
-    - cache (redis, memcached)
-  cloud_platforms:
-    - aws (ec2, lambda, eks, rds, aurora)
-    - azure (vm, functions, aks, cosmos db)
-    - gcp (compute engine, cloud run, gke, cloud spanner)
-    - multi_cloud_strategies
-  devops_tools:
-    - docker
-    - kubernetes
-    - jenkins
-    - gitlab_ci
-    - github_actions
-    - terraform
-    - ansible
-  monitoring:
-    - prometheus
-    - grafana
-    - elk_stack
-    - datadog
-    - new_relic
-    - aws_cloudwatch
-    - azure_monitor
+# Technical Implementation
+technical_implementation:
+  reasoning_model:
+    id: "deepseek/deepseek-r1"
+    provider: "OpenRouter"
+    purpose: "Structured JSON schema generation with reasoning"
+    max_tokens: 4000
 
-# Use Cases
-use_cases:
-  primary:
-    - "Startup architecture planning and MVP design"
-    - "Enterprise system modernization and migration"
-    - "Technical due diligence and architecture reviews"
-    - "Implementation roadmap creation"
-  secondary:
-    - "Team technical training and guidance"
-    - "Vendor technology evaluation"
-    - "Cost optimization analysis"
-    - "Risk assessment and mitigation"
+  drafting_model:
+    id: "anthropic/claude-3.5-sonnet"
+    provider: "OpenRouter via Agno"
+    purpose: "Transform JSON spec into professional markdown report"
+
+  framework: "Agno Agent framework"
+  server: "Bindu (bindufy)"
+  protocol: "JSON-RPC 2.0"
+  default_port: 3773
+
+  dependencies:
+    - agno
+    - openai (SDK for OpenRouter)
+    - bindu
+    - mem0 (optional)
+
+# API Requirements
+api_requirements:
+  required:
+    - OPENROUTER_API_KEY
+  optional:
+    - MEM0_API_KEY (enables memory features)
+
+  configurable_models:
+    - REASONING_MODEL (env var or --reasoning-model CLI arg)
+    - DRAFTING_MODEL (env var or --drafting-model CLI arg)
+
+# Input Processing
+input_processing:
+  accepts: "List of message objects with role and content"
+  extracts: "Last user message from conversation history"
+  validation: "Returns error if no user input found"
+
+# Output Format
+output_format:
+  primary: "Markdown technical design document"
+  sections_generated:
+    - Executive summary
+    - System architecture overview
+    - Architectural pattern selection with rationale
+    - Infrastructure design
+    - Security architecture
+    - Database strategy
+    - Technical stack
+    - Risk mitigation strategies
+    - Mermaid diagrams (where appropriate)
+
+  additional_content:
+    - Collapsible reasoning section with DeepSeek R1 thought process
 
 # Deliverables
 deliverables:
-  architecture_diagrams:
-    - system_overview
-    - component_interactions
-    - data_flow
-    - deployment_topology
-    - security_architecture
-  technical_documents:
-    - architecture_decisions (ADRs)
-    - api_specifications
-    - security_guidelines
-    - deployment_strategies
-    - infrastructure_requirements
-  implementation_plans:
-    - phased_roadmap
-    - resource_requirements
-    - timeline_estimates
-    - risk_mitigation
-    - cost_projections
-  compliance_frameworks:
-    - gdpr_compliance
-    - pci_dss_requirements
-    - hipaa_guidelines
-    - soc2_controls
-    - iso27001_standards
+  markdown_report:
+    - Technical design document
+    - Architecture decisions with reasoning
+    - Mermaid.js diagrams
+    - Trade-off analysis
+    - Cost estimates (if provided by reasoning model)
+    - Implementation recommendations
+
+  reasoning_artifacts:
+    - Extracted reasoning tokens from DeepSeek R1
+    - JSON specification used for report generation
 
 # Limitations
 limitations:
-  - "Provides recommendations, not actual implementation"
-  - "Requires clear and detailed requirements"
-  - "Cannot access proprietary internal systems"
-  - "Recommendations based on general best practices"
+  - "Does not implement code or infrastructure"
+  - "Output quality depends on LLM model capabilities"
+  - "Requires OpenRouter API key to function"
+  - "No built-in validation of generated architecture recommendations"
+  - "Does not access external systems or real-time data"
+  - "Cannot execute or test proposed architectures"
+  - "Reasoning extraction depends on model response format"
 
-# Best Practices
+# Error Handling
+error_handling:
+  missing_api_key: "Raises ValueError with clear error message"
+  reasoning_phase_failure: "Returns error message to user"
+  agent_not_initialized: "Raises RuntimeError"
+  general_exceptions: "Caught and returned as formatted error strings"
+
+# Best Practices for Users
 best_practices:
-  - "Provide detailed business requirements and constraints"
-  - "Specify expected scale and performance requirements"
-  - "Include budget and timeline constraints"
-  - "Mention existing technology stack and preferences"
-  - "Define compliance and regulatory requirements"
+  - "Provide detailed project requirements including scale, performance needs, and constraints"
+  - "Specify compliance requirements (PCI-DSS, GDPR, SOC2, etc.) if applicable"
+  - "Include expected user scale and data volume"
+  - "Mention existing technology preferences or constraints"
+  - "Be specific about security and availability requirements"
