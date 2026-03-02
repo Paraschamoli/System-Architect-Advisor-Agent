@@ -37,137 +37,193 @@ examples:
 capabilities_detail:
   architecture_analysis:
     supported: true
-    method: "Two-phase LLM pipeline (reasoning + drafting)"
-    output_format: "Structured JSON converted to markdown technical report"
-    patterns_analyzed:
-      - microservices
-      - monolithic
-      - serverless
-      - event_driven
-      - layered
-
-  structured_output:
-    supported: true
-    schema_fields:
-      - architecture_decision (pattern, rationale, trade-offs, cost estimates)
-      - infrastructure_resources (resource type, specs, scaling policy, cost)
-      - security_measures (measure type, priority, compliance standards, data classification)
-      - database_choice
-      - tech_stack (frontend, backend, devops)
-      - risk_assessment (risk to mitigation mapping)
-      - implementation_roadmap (phased steps)
-
-  reasoning_transparency:
-    supported: true
-    method: "DeepSeek R1 reasoning tokens extracted and included in collapsible section"
+    description: "Two-phase LLM pipeline that generates structured technical design documents"
+    features:
+      - "DeepSeek R1 reasoning for structured JSON analysis"
+      - "Claude 3.5 Sonnet for markdown report generation"
+      - "Architecture pattern recommendations (microservices, monolithic, serverless, event-driven, layered)"
+      - "Infrastructure resource specifications with scaling policies"
+      - "Security measures with compliance standards"
+      - "Database selection and tech stack recommendations"
+      - "Risk assessment and mitigation strategies"
+      - "Phased implementation roadmap"
+      - "Mermaid.js diagram generation"
+      - "Reasoning transparency with collapsible sections"
+    limitations: "Output quality depends on LLM capabilities, no code implementation, no validation of recommendations"
 
   memory_integration:
     supported: true
-    condition: "Only if MEM0_API_KEY environment variable is set"
-    tool: "Mem0Tools"
+    planned_version: "1.0.0"
+    description: "Optional Mem0 integration for context retention across conversations"
+
+# Requirements
+requirements:
+  packages:
+    - "agno"
+    - "openai"
+    - "bindu"
+    - "mem0 (optional)"
+  system:
+    - "Python 3.10+"
+  environment_variables:
+    - "OPENROUTER_API_KEY (required)"
+    - "MEM0_API_KEY (optional)"
+  min_memory_mb: 512
 
 # Performance Metrics
 performance:
-  processing_phases: 2
-  phase_1_reasoning: "DeepSeek R1 analysis (max 4000 tokens)"
-  phase_2_drafting: "Claude 3.5 Sonnet markdown generation"
-  estimated_time: "Variable based on LLM API response times"
-  async_execution: true
-  lazy_initialization: true
+  avg_processing_time_ms: 60000
+  max_concurrent_requests: 5
+  memory_per_request_mb: 512
+  scalability: vertical
 
-# Technical Implementation
-technical_implementation:
-  reasoning_model:
-    id: "deepseek/deepseek-r1"
-    provider: "OpenRouter"
-    purpose: "Structured JSON schema generation with reasoning"
-    max_tokens: 4000
+# Tool Restrictions
+allowed_tools:
+  - Read
+  - Write
 
-  drafting_model:
-    id: "anthropic/claude-3.5-sonnet"
-    provider: "OpenRouter via Agno"
-    purpose: "Transform JSON spec into professional markdown report"
+# Rich Documentation
+documentation:
+  overview: |
+    Two-phase AI system that transforms project requirements into technical design documents.
+    Phase 1: DeepSeek R1 analyzes requirements and generates structured JSON with reasoning.
+    Phase 2: Claude 3.5 Sonnet converts JSON into professional markdown report with diagrams.
+    Built on Agno framework with OpenRouter models, served via Bindu JSON-RPC 2.0 protocol.
 
-  framework: "Agno Agent framework"
-  server: "Bindu (bindufy)"
-  protocol: "JSON-RPC 2.0"
-  default_port: 3773
+  use_cases:
+    when_to_use:
+      - "System architecture design and planning"
+      - "Technical documentation generation"
+      - "Architecture decision records (ADRs)"
+      - "Infrastructure planning and recommendations"
+      - "Technology stack selection guidance"
 
-  dependencies:
-    - agno
-    - openai (SDK for OpenRouter)
-    - bindu
-    - mem0 (optional)
+    when_not_to_use:
+      - "Code implementation or infrastructure deployment"
+      - "Real-time system validation or testing"
+      - "Direct integration with cloud providers"
+      - "Low-latency requirements (< 30 seconds)"
 
-# API Requirements
-api_requirements:
-  required:
-    - OPENROUTER_API_KEY
-  optional:
-    - MEM0_API_KEY (enables memory features)
+  input_structure: |
+    JSON-RPC 2.0 message with natural language project requirements.
 
-  configurable_models:
-    - REASONING_MODEL (env var or --reasoning-model CLI arg)
-    - DRAFTING_MODEL (env var or --drafting-model CLI arg)
+    Example:
+    {
+      "jsonrpc": "2.0",
+      "method": "message/send",
+      "params": {
+        "message": {
+          "role": "user",
+          "parts": [
+            {
+              "kind": "text",
+              "text": "Design a scalable system architecture for a multi-tenant SaaS analytics platform..."
+            }
+          ],
+          "kind": "message",
+          "messageId": "uuid",
+          "contextId": "uuid",
+          "taskId": "uuid"
+        },
+        "skillId": "System-Architect-Advisor-v1",
+        "configuration": {
+          "acceptedOutputModes": ["application/json"]
+        }
+      },
+      "id": "uuid"
+    }
 
-# Input Processing
-input_processing:
-  accepts: "List of message objects with role and content"
-  extracts: "Last user message from conversation history"
-  validation: "Returns error if no user input found"
+  output_format: |
+    JSON-RPC 2.0 result with markdown technical design document in artifacts.
 
-# Output Format
-output_format:
-  primary: "Markdown technical design document"
-  sections_generated:
+    Success Response includes:
     - Executive summary
-    - System architecture overview
-    - Architectural pattern selection with rationale
-    - Infrastructure design
-    - Security architecture
-    - Database strategy
-    - Technical stack
+    - System architecture overview with Mermaid diagrams
+    - Architectural pattern selection with rationale and trade-offs
+    - Infrastructure design with resource specifications
+    - Security architecture with compliance considerations
+    - Database strategy and tech stack recommendations
     - Risk mitigation strategies
-    - Mermaid diagrams (where appropriate)
+    - Collapsible section with DeepSeek R1 reasoning process
 
-  additional_content:
-    - Collapsible reasoning section with DeepSeek R1 thought process
+  error_handling:
+    - "Missing API key: Returns ValueError with clear message"
+    - "Reasoning phase failure: Returns error message to user"
+    - "Agent not initialized: Returns RuntimeError"
+    - "Invalid input: Returns guidance message"
+    - "LLM API failures: Propagated to user with error details"
 
-# Deliverables
-deliverables:
-  markdown_report:
-    - Technical design document
-    - Architecture decisions with reasoning
-    - Mermaid.js diagrams
-    - Trade-off analysis
-    - Cost estimates (if provided by reasoning model)
-    - Implementation recommendations
+  best_practices:
+    for_developers:
+      - "Set OPENROUTER_API_KEY environment variable before starting"
+      - "Use async/await for handler calls"
+      - "Implement lazy initialization pattern"
+      - "Extract reasoning tokens from model responses"
 
-  reasoning_artifacts:
-    - Extracted reasoning tokens from DeepSeek R1
-    - JSON specification used for report generation
+    for_orchestrators:
+      - "Route architecture design queries to this skill"
+      - "Expect 30-90 second processing time per request"
+      - "Chain with implementation or validation skills for complete workflow"
+      - "Provide detailed requirements for better output quality"
 
-# Limitations
-limitations:
-  - "Does not implement code or infrastructure"
-  - "Output quality depends on LLM model capabilities"
-  - "Requires OpenRouter API key to function"
-  - "No built-in validation of generated architecture recommendations"
-  - "Does not access external systems or real-time data"
-  - "Cannot execute or test proposed architectures"
-  - "Reasoning extraction depends on model response format"
+  installation: |
+    Install via uv package manager.
 
-# Error Handling
-error_handling:
-  missing_api_key: "Raises ValueError with clear error message"
-  reasoning_phase_failure: "Returns error message to user"
-  agent_not_initialized: "Raises RuntimeError"
-  general_exceptions: "Caught and returned as formatted error strings"
+    Required packages:
+    uv sync
 
-# Best Practices for Users
-best_practices:
-  - "Provide detailed project requirements including scale, performance needs, and constraints"
-  - "Specify compliance requirements (PCI-DSS, GDPR, SOC2, etc.) if applicable"
-  - "Include expected user scale and data volume"
-  - "Mention existing technology preferences or constraints"
-  - "Be specific about security and availability requirements"
+    Environment variables:
+    OPENROUTER_API_KEY=<your-key>
+    MEM0_API_KEY=<your-key> (optional)
+
+    Optional CLI arguments:
+    --reasoning-model (default: deepseek/deepseek-r1)
+    --drafting-model (default: anthropic/claude-3.5-sonnet)
+
+    Run:
+    uv run python -m system_architect_advisor_agent
+
+  versioning:
+    - version: "1.0.0"
+      date: "2026-03-02"
+      changes: "Initial release with two-phase architecture analysis pipeline"
+
+# Assessment fields for skill negotiation
+assessment:
+  keywords:
+    - "architecture"
+    - "system design"
+    - "infrastructure"
+    - "technical design"
+    - "scalability"
+    - "microservices"
+    - "database design"
+    - "security architecture"
+    - "compliance"
+    - "implementation roadmap"
+
+  specializations:
+    - domain: "system-architecture"
+      confidence_boost: 0.4
+    - domain: "technical-design"
+      confidence_boost: 0.3
+    - domain: "infrastructure-planning"
+      confidence_boost: 0.2
+
+  anti_patterns:
+    - "Code implementation requests"
+    - "Infrastructure deployment automation"
+    - "Real-time system monitoring"
+    - "Direct cloud provider integration"
+
+  complexity_indicators:
+    simple:
+      - "Basic architecture recommendations"
+      - "Single-service system design"
+    medium:
+      - "Multi-tier application architecture"
+      - "Microservices design with 5-10 services"
+    complex:
+      - "Large-scale distributed systems"
+      - "Multi-tenant SaaS platforms"
+      - "High-compliance fintech systems"
