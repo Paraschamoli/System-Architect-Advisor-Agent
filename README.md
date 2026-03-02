@@ -28,7 +28,12 @@ AI System Architect Advisor is an AI-powered system design assistant that transf
 - 📊 **Infrastructure Planning** - Design cloud infrastructure and deployment strategies
 - 🔒 **Security Strategy** - Develop comprehensive security frameworks and compliance plans
 - 🗺️ **Implementation Roadmaps** - Generate detailed technical implementation plans
-- � **Technical Documentation** - Produce structured architecture documents and specifications
+- 📝 **Technical Documentation** - Produce structured architecture documents and specifications
+
+**🤖 Multi-Model Architecture:**
+- **Reasoning Engine**: DeepSeek R1 for structured analysis and JSON specification generation
+- **Drafting Engine**: Claude 3.5 Sonnet for professional technical documentation and reports
+- **Memory Integration**: Mem0 for contextual conversation history and learning
 
 ---
 
@@ -36,9 +41,9 @@ AI System Architect Advisor is an AI-powered system design assistant that transf
 
 ### Prerequisites
 
-- Python 3.10+
+- Python 3.12+
 - [uv](https://github.com/astral-sh/uv) package manager
-- API keys for OpenRouter and Mem0 (both have free tiers)
+- API keys for OpenRouter (required) and Mem0 (optional)
 
 ### Installation
 
@@ -47,11 +52,7 @@ AI System Architect Advisor is an AI-powered system design assistant that transf
 git clone https://github.com/Paraschamoli/System-Architect-Advisor-Agent.git
 cd System-Architect-Advisor-Agent
 
-# Create virtual environment
-uv venv --python 3.12.9
-source .venv/bin/activate  # On Windows: .venv\Scripts\activate
-
-# Install dependencies
+# Install dependencies using uv
 uv sync
 
 # Configure environment
@@ -65,7 +66,7 @@ Edit `.env` and add your API keys:
 | Key | Get It From | Required |
 |-----|-------------|----------|
 | `OPENROUTER_API_KEY` | [OpenRouter](https://openrouter.ai/keys) | ✅ Yes |
-| `MEM0_API_KEY` | [Mem0 Dashboard](https://app.mem0.ai/dashboard/api-keys) | If you want to use Mem0 tools |
+| `MEM0_API_KEY` | [Mem0 Dashboard](https://app.mem0.ai/dashboard/api-keys) | ⚪ Optional |
 
 ### Run the Agent
 
@@ -290,7 +291,7 @@ make test-cov          # With coverage report
 ```bash
 make format            # Format code with ruff
 make lint              # Run linters
-make check             # Format + lint + test
+make check             # Format + lint + type check + test
 ```
 
 ### Pre-commit Hooks
@@ -301,6 +302,25 @@ uv run pre-commit install
 
 # Run manually
 uv run pre-commit run -a
+```
+
+### Development Workflow
+
+```bash
+# 1. Make your changes
+git add .
+
+# 2. Run quality checks (automatically runs pre-commit hooks)
+make check
+
+# 3. Run tests
+make test
+
+# 4. Commit your changes
+git commit -m "feat: add amazing feature"
+
+# 5. Push to trigger CI/CD
+git push origin main
 ```
 
 ---
@@ -362,5 +382,6 @@ uvx cookiecutter https://github.com/getbindu/create-bindu-agent.git
   <a href="https://bindus.directory">🌐 Agent Directory</a>
 </p>
 
-#   S y s t e m - A r c h i t e c t - A d v i s o r - A g e n t  
+#   S y s t e m - A r c h i t e c t - A d v i s o r - A g e n t 
+ 
  

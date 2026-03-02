@@ -11,8 +11,8 @@ author: paras@getbindu.com
 description: |
   AI System Architect Advisor is an intelligent system design assistant that transforms natural language
   project requirements into structured architecture recommendations, infrastructure planning, security strategies,
-  and compliance considerations. It leverages multi-model reasoning to generate schema-driven technical analysis,
-  detailed implementation roadmaps, and well-formatted technical documentation.
+  and compliance considerations. It leverages a dual-model reasoning pipeline with DeepSeek R1 for structured
+  analysis and Claude 3.5 Sonnet for professional documentation generation.
 
 # Tags and Modes
 tags:
@@ -36,11 +36,11 @@ output_modes:
 
 # Example Queries
 examples:
-  - "Design a microservices architecture for an e-commerce platform handling 1M users"
-  - "Create a system design for a real-time chat application with video calling"
-  - "Plan the infrastructure for a fintech payment processing system"
-  - "Design a scalable architecture for a social media analytics platform"
-  - "Create a technical roadmap for migrating a monolith to microservices"
+  - "Design a microservices architecture for an e-commerce platform handling 1M users daily with real-time inventory"
+  - "Create a system design for a fintech payment processing system with PCI compliance and 10K TPS"
+  - "Plan cloud migration strategy for legacy monolith to microservices architecture"
+  - "Design real-time chat application with video calling for 100K concurrent users"
+  - "Create technical roadmap for social media platform with recommendation engine"
 
 # Detailed Capabilities
 capabilities_detail:
@@ -89,41 +89,54 @@ capabilities_detail:
 
 # Performance Metrics
 performance:
-  average_processing_time: "~30-45 seconds"
+  average_processing_time: "~30-90 seconds per architecture design"
   max_concurrent_requests: 10
   memory_per_request: "~512MB"
   supported_project_sizes:
     - small_startup
     - medium_enterprise
     - large_scale_systems
+  reasoning_model: "deepseek/deepseek-r1"
+  drafting_model: "anthropic/claude-3.5-sonnet"
 
 # Technical Expertise
 technical_expertise:
   programming_languages:
     - python
-    - javascript
+    - javascript/typescript
     - java
     - go
     - rust
-    - typescript
+    - c#/.net
+    - ruby
   databases:
-    - relational_sql
-    - nosql
-    - graph_databases
-    - time_series
-    - search_engines
+    - relational_sql (postgresql, mysql, sqlserver)
+    - nosql (mongodb, cassandra, dynamodb)
+    - graph_databases (neo4j, amazon neptune)
+    - time_series (influxdb, timescaledb)
+    - search_engines (elasticsearch, opensearch)
+    - cache (redis, memcached)
+  cloud_platforms:
+    - aws (ec2, lambda, eks, rds, aurora)
+    - azure (vm, functions, aks, cosmos db)
+    - gcp (compute engine, cloud run, gke, cloud spanner)
+    - multi_cloud_strategies
   devops_tools:
     - docker
     - kubernetes
     - jenkins
     - gitlab_ci
     - github_actions
+    - terraform
+    - ansible
   monitoring:
     - prometheus
     - grafana
     - elk_stack
     - datadog
     - new_relic
+    - aws_cloudwatch
+    - azure_monitor
 
 # Use Cases
 use_cases:
@@ -145,16 +158,25 @@ deliverables:
     - component_interactions
     - data_flow
     - deployment_topology
+    - security_architecture
   technical_documents:
-    - architecture_decisions
+    - architecture_decisions (ADRs)
     - api_specifications
     - security_guidelines
     - deployment_strategies
+    - infrastructure_requirements
   implementation_plans:
     - phased_roadmap
     - resource_requirements
     - timeline_estimates
     - risk_mitigation
+    - cost_projections
+  compliance_frameworks:
+    - gdpr_compliance
+    - pci_dss_requirements
+    - hipaa_guidelines
+    - soc2_controls
+    - iso27001_standards
 
 # Limitations
 limitations:
